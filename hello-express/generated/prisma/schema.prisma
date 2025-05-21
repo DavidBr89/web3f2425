@@ -1,0 +1,82 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+enum ROLE {
+  USER
+  MANAGER
+  ADMIN
+}
+
+model User {
+  id          Int        @id @default(autoincrement())
+  firstName   String     @db.VarChar(50)
+  lastName    String
+  email       String     @unique
+  password    String
+  description String?    @db.Text
+  isVerified  Boolean    @default(false)
+  birthDate   DateTime?
+  role        ROLE       @default(USER)
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  profile     Profile?
+  profileId   Int        @unique
+  bookmarks   Bookmark[]
+
+  @@unique([firstName, lastName])
+  @@map("users")
+}
+
+model Profile {
+  id        Int        @id @default(autoincrement())
+  street    String
+  user      User       @relation(fields: [userId], references: [id])
+  userId    Int        @unique
+  bookmarks Bookmark[]
+
+  @@map("profiles")
+}
+
+model Bookmark {
+  id       Int       @id @default(autoincrement())
+  name     String
+  url      String
+  user     User      @relation(fields: [userId], references: [id])
+  userId   Int
+  profiles Profile[]
+}
+
+model Product {
+  id         Int         @id @default(autoincrement())
+  name       String      @unique
+  orderLines OrderLine[]
+}
+
+model Order {
+  id         Int         @id @default(autoincrement())
+  createdAt  DateTime    @default(now())
+  orderLines OrderLine[]
+}
+
+model OrderLine {
+  order     Order   @relation(fields: [orderId], references: [id])
+  orderId   Int
+  product   Product @relation(fields: [productId], references: [id])
+  productId Int
+  qty       Int
+
+  @@id([orderId, productId])
+}
