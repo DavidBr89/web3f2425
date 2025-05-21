@@ -3,7 +3,7 @@ const loggerMiddleware = require("../middlewares/logger_middleware");
 const router = express.Router();
 
 /* GET home page. */
-router.get("/", [loggerMiddleware, authMiddleware], function (req, res) {
+router.get("/", [loggerMiddleware], function (req, res) {
   const test = {
     id: 1,
     name: "Web 3",
