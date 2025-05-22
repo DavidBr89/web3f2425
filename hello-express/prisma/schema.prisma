@@ -34,7 +34,7 @@ model User {
   createdAt   DateTime   @default(now())
   updatedAt   DateTime   @updatedAt
   profile     Profile?
-  profileId   Int        @unique
+  profileId   Int?       @unique
   bookmarks   Bookmark[]
 
   @@unique([firstName, lastName])
