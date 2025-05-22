@@ -39,11 +39,6 @@ const UsersController = {
           password: hashedPassword,
           firstName: "John",
           lastName: "Doe",
-          profile: {
-            create: {
-              street: "Test",
-            },
-          },
         },
       });
 
